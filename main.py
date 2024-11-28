@@ -125,20 +125,21 @@ async def process_weather_query(request: Request):
             print("weather_info", weather_info)
 
             async def weather_data_stream():
-                yield json.dumps({"type": "weather_data_days", "data": weather_info}) + "\n"
+                key = "weather_data_days" if tool_call.function.name == "get_weather_range_days" else "weather_data_hours"
+                yield json.dumps({"type": key, "data": weather_info}) + "\n"
 
                 # 第三步：让模型分析数据
                 messages.append({
                     "role": "tool",
                     "tool_call_id": tool_call.id,
-                    "content": "请用精简的语言总结一下这段天气数据,可以从多方面进行归纳总结,比如这段时间是否适合出游,是否需要添加衣物注意防寒保暖等,总结的数据以不需要详细查看天气数据就能知道天气概况为目标。直接返回JSON格式字符串,将总结后的数据作为key为summary的值。不需要返回天气数据,请确保返回的字符串不包含任何格式标记,如```json```等。" + json.dumps(weather_info)
+                    "content": "请用精简的语言总结一下这段天气数据,可以从多方面进行归纳总结,比如这段时间是否适合出游,是否需要添加衣物注意防寒保暖等,总结的数据以不需要详细查看天气数据就能知道天气概况为目标。直接返回字符串,不需要返回天气数据,请确保返回的字符串不包含任何格式标记,如```json```等。" + json.dumps(weather_info)
                 })
 
                 analysis_stream = stream_response(messages)
                 for chunk in analysis_stream:
                     if chunk.choices[0].delta.content:
                         print(chunk.choices[0].delta.content, end='', flush=True)
-                        yield json.dumps({"type": "analysis", "data": chunk.choices[0].delta.content}) + "\n"
+                        yield json.dumps({"type": "summary", "data": chunk.choices[0].delta.content}) + "\n"
 
                 yield json.dumps({"type": "finish", "data": True}) + "\n"
 
