@@ -126,7 +126,7 @@ async def process_weather_query(request: Request):
 
             async def weather_data_stream():
                 key = "weather_data_days" if tool_call.function.name == "get_weather_range_days" else "weather_data_hours"
-                yield json.dumps({"type": key, "data": weather_info}) + "\n"
+                yield json.dumps({"type": key, "data": weather_info.join("")}) + "\n"
 
                 # 第三步：让模型分析数据
                 messages.append({
