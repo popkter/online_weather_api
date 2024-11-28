@@ -1,8 +1,8 @@
 from openai import OpenAI
 
+from common import CHAT_API_KEY
 from function_call import FUNCTION_CALL_TOOLS
 
-CHAT_API_KEY = ""
 
 CLIENT = OpenAI(api_key=CHAT_API_KEY, base_url="https://api.deepseek.com")
 

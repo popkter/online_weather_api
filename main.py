@@ -7,11 +7,9 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import StreamingResponse
 
 from chat import send_messages, stream_response
-from port import WEATHER_PORT
+from common import WEATHER_PORT, WEATHER_API_KEY
+
 app = FastAPI()
-
-WEATHER_API_KEY = ""
-
 
 # 提取每小时的天气数据
 def extract_hourly_weather_data(data):
