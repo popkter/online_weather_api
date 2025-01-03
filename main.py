@@ -7,7 +7,17 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import StreamingResponse
 
 from chat import send_messages, stream_response
-from common import WEATHER_PORT, WEATHER_API_KEY
+
+from dotenv import load_dotenv
+import os
+
+from common import WEATHER_PORT
+
+load_dotenv()
+
+CHAT_API_KEY = os.getenv("CHAT_API_KEY")
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+
 
 app = FastAPI()
 
